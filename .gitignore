@@ -1,0 +1,73 @@
+# Build output
+bin/
+obj/
+out/
+artifacts/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.rsuser
+*.vcxproj.user
+
+# Rider / JetBrains
+.idea/
+*.sln.iml
+
+# VS Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# Local configuration and secrets
+appsettings.Local.json
+appsettings.*.Local.json
+*.Development.local.json
+secrets.json
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+logs/
+Log/
+
+# Test results and coverage
+TestResults/
+coverage/
+coverage.opencover.xml
+coverage.cobertura.xml
+*.trx
+
+# NuGet
+*.nupkg
+*.snupkg
+packages/
+project.lock.json
+project.assets.json
+
+# Publish output
+publish/
+wwwroot/dist/
+
+# ASP.NET generated files
+GeneratedFiles/
+wwwroot/lib/
+
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.swp
+~$*
