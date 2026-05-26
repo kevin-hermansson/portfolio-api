@@ -8,9 +8,9 @@ public static class SkillEndpoints
 {
     public static void Map(WebApplication app)
     {
-        app.MapGet("/skills", (SkillService skillService) =>
+        app.MapGet("/skills", async (SkillService skillService) =>
         {
-            var skills = skillService.GetSkills();
+            var skills = await skillService.GetSkillsAsync();
             return Results.Ok(skills);
         })
         .WithName("GetSkills")
@@ -18,14 +18,14 @@ public static class SkillEndpoints
         .WithDescription("Returns every portfolio skill, including category and skill level.")
         .Produces<List<SkillDto>>(StatusCodes.Status200OK);
 
-        app.MapGet("/skills/{id:int}", ([FromRoute] int id, SkillService skillService) =>
+        app.MapGet("/skills/{id:int}", async ([FromRoute] int id, SkillService skillService) =>
         {
             if (id < 1)
             {
                 return Results.BadRequest("Skill id must be greater than zero.");
             }
 
-            var skill = skillService.GetSkill(id);
+            var skill = await skillService.GetSkillAsync(id);
             return skill is null ? Results.NotFound() : Results.Ok(skill);
         })
         .WithName("GetSkillById")
@@ -35,7 +35,7 @@ public static class SkillEndpoints
         .Produces(StatusCodes.Status404NotFound)
         .Produces(StatusCodes.Status400BadRequest);
 
-        app.MapPost("/skills", (
+        app.MapPost("/skills", async (
             [FromBody] SkillRequestDto skillRequest,
             SkillService skillService) =>
         {
@@ -54,7 +54,7 @@ public static class SkillEndpoints
                 return Results.BadRequest("Level must be between 1 and 5.");
             }
 
-            var skill = skillService.CreateSkill(skillRequest);
+            var skill = await skillService.CreateSkillAsync(skillRequest);
             return Results.Created($"/skills/{skill.Id}", skill);
         })
         .WithName("CreateSkill")
@@ -63,7 +63,7 @@ public static class SkillEndpoints
         .Produces<SkillDto>(StatusCodes.Status201Created)
         .Produces(StatusCodes.Status400BadRequest);
 
-        app.MapPut("/skills/{id:int}", (
+        app.MapPut("/skills/{id:int}", async (
             [FromRoute] int id,
             [FromBody] SkillRequestDto skillRequest,
             SkillService skillService) =>
@@ -88,7 +88,7 @@ public static class SkillEndpoints
                 return Results.BadRequest("Level must be between 1 and 5.");
             }
 
-            var skill = skillService.UpdateSkill(id, skillRequest);
+            var skill = await skillService.UpdateSkillAsync(id, skillRequest);
             return skill is null ? Results.NotFound() : Results.Ok(skill);
         })
         .WithName("UpdateSkill")
@@ -98,14 +98,14 @@ public static class SkillEndpoints
         .Produces(StatusCodes.Status404NotFound)
         .Produces(StatusCodes.Status400BadRequest);
 
-        app.MapDelete("/skills/{id:int}", ([FromRoute] int id, SkillService skillService) =>
+        app.MapDelete("/skills/{id:int}", async ([FromRoute] int id, SkillService skillService) =>
         {
             if (id < 1)
             {
                 return Results.BadRequest("Skill id must be greater than zero.");
             }
 
-            var deleted = skillService.DeleteSkill(id);
+            var deleted = await skillService.DeleteSkillAsync(id);
             return deleted ? Results.NoContent() : Results.NotFound();
         })
         .WithName("DeleteSkill")

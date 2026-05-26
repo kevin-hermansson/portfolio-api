@@ -1,51 +1,39 @@
+using Microsoft.EntityFrameworkCore;
+using Portfolio.Api.Data;
 using Portfolio.Api.Data.Models;
 
 namespace Portfolio.Api.Data.Repositories;
 
 public class ExperienceRepository
 {
-    private readonly List<Experience> _experiences = new()
-    {
-        new Experience
-        {
-            Id = 1,
-            Company = "Example Company",
-            Role = "Backend Developer",
-            StartDate = new DateOnly(2024, 1, 1),
-            EndDate = null,
-            Description = "Building backend APIs and portfolio services.",
-            Technologies = new List<string> { "C#", "ASP.NET Core", "Minimal API" }
-        }
-    };
+    private readonly PortfolioDbContext _context;
 
-    public List<Experience> GetAll()
+    public ExperienceRepository(PortfolioDbContext context)
     {
-        return _experiences;
+        _context = context;
     }
 
-    public Experience? GetById(int id)
+    public async Task<List<Experience>> GetAllAsync()
     {
-        foreach (var experience in _experiences)
-        {
-            if (experience.Id == id)
-            {
-                return experience;
-            }
-        }
-
-        return null;
+        return await _context.Experiences.ToListAsync();
     }
 
-    public Experience Add(Experience experience)
+    public async Task<Experience?> GetByIdAsync(int id)
     {
-        experience.Id = GetNextId();
-        _experiences.Add(experience);
+        return await _context.Experiences.FindAsync(id);
+    }
+
+    public async Task<Experience> AddAsync(Experience experience)
+    {
+        _context.Experiences.Add(experience);
+        await _context.SaveChangesAsync();
+
         return experience;
     }
 
-    public Experience? Update(int id, Experience updatedExperience)
+    public async Task<Experience?> UpdateAsync(int id, Experience updatedExperience)
     {
-        var experience = GetById(id);
+        var experience = await GetByIdAsync(id);
 
         if (experience is null)
         {
@@ -59,34 +47,23 @@ public class ExperienceRepository
         experience.Description = updatedExperience.Description;
         experience.Technologies = updatedExperience.Technologies;
 
+        await _context.SaveChangesAsync();
+
         return experience;
     }
 
-    public bool Delete(int id)
+    public async Task<bool> DeleteAsync(int id)
     {
-        var experience = GetById(id);
+        var experience = await GetByIdAsync(id);
 
         if (experience is null)
         {
             return false;
         }
 
-        _experiences.Remove(experience);
+        _context.Experiences.Remove(experience);
+        await _context.SaveChangesAsync();
+
         return true;
-    }
-
-    private int GetNextId()
-    {
-        var nextId = 1;
-
-        foreach (var experience in _experiences)
-        {
-            if (experience.Id >= nextId)
-            {
-                nextId = experience.Id + 1;
-            }
-        }
-
-        return nextId;
     }
 }

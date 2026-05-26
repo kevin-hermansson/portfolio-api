@@ -8,9 +8,9 @@ public static class ProjectEndpoints
 {
     public static void Map(WebApplication app)
     {
-        app.MapGet("/projects", (ProjectService projectService) =>
+        app.MapGet("/projects", async (ProjectService projectService) =>
         {
-            var projects = projectService.GetProjects();
+            var projects = await projectService.GetProjectsAsync();
             return Results.Ok(projects);
         })
         .WithName("GetProjects")
@@ -18,14 +18,14 @@ public static class ProjectEndpoints
         .WithDescription("Returns every portfolio project, including repository URL and technologies used.")
         .Produces<List<ProjectDto>>(StatusCodes.Status200OK);
 
-        app.MapGet("/projects/{id:int}", ([FromRoute] int id, ProjectService projectService) =>
+        app.MapGet("/projects/{id:int}", async ([FromRoute] int id, ProjectService projectService) =>
         {
             if (id < 1)
             {
                 return Results.BadRequest("Project id must be greater than zero.");
             }
 
-            var project = projectService.GetProject(id);
+            var project = await projectService.GetProjectAsync(id);
             return project is null ? Results.NotFound() : Results.Ok(project);
         })
         .WithName("GetProjectById")

@@ -13,9 +13,9 @@ public class ProjectService
         _projectRepository = projectRepository;
     }
 
-    public List<ProjectDto> GetProjects()
+    public async Task<List<ProjectDto>> GetProjectsAsync()
     {
-        var projects = _projectRepository.GetAll();
+        var projects = await _projectRepository.GetAllAsync();
         var projectDtos = new List<ProjectDto>();
 
         foreach (var project in projects)
@@ -26,9 +26,9 @@ public class ProjectService
         return projectDtos;
     }
 
-    public ProjectDto? GetProject(int id)
+    public async Task<ProjectDto?> GetProjectAsync(int id)
     {
-        var project = _projectRepository.GetById(id);
+        var project = await _projectRepository.GetByIdAsync(id);
         return project is null ? null : ToDto(project);
     }
 

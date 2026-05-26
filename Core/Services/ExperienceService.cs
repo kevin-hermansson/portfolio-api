@@ -13,9 +13,9 @@ public class ExperienceService
         _experienceRepository = experienceRepository;
     }
 
-    public List<ExperienceDto> GetExperiences()
+    public async Task<List<ExperienceDto>> GetExperiencesAsync()
     {
-        var experiences = _experienceRepository.GetAll();
+        var experiences = await _experienceRepository.GetAllAsync();
         var experienceDtos = new List<ExperienceDto>();
 
         foreach (var experience in experiences)
@@ -26,31 +26,31 @@ public class ExperienceService
         return experienceDtos;
     }
 
-    public ExperienceDto? GetExperience(int id)
+    public async Task<ExperienceDto?> GetExperienceAsync(int id)
     {
-        var experience = _experienceRepository.GetById(id);
+        var experience = await _experienceRepository.GetByIdAsync(id);
         return experience is null ? null : ToDto(experience);
     }
 
-    public ExperienceDto CreateExperience(ExperienceRequestDto experienceRequest)
+    public async Task<ExperienceDto> CreateExperienceAsync(ExperienceRequestDto experienceRequest)
     {
         var experience = ToModel(experienceRequest);
-        var createdExperience = _experienceRepository.Add(experience);
+        var createdExperience = await _experienceRepository.AddAsync(experience);
 
         return ToDto(createdExperience);
     }
 
-    public ExperienceDto? UpdateExperience(int id, ExperienceRequestDto experienceRequest)
+    public async Task<ExperienceDto?> UpdateExperienceAsync(int id, ExperienceRequestDto experienceRequest)
     {
         var experience = ToModel(experienceRequest);
-        var updatedExperience = _experienceRepository.Update(id, experience);
+        var updatedExperience = await _experienceRepository.UpdateAsync(id, experience);
 
         return updatedExperience is null ? null : ToDto(updatedExperience);
     }
 
-    public bool DeleteExperience(int id)
+    public async Task<bool> DeleteExperienceAsync(int id)
     {
-        return _experienceRepository.Delete(id);
+        return await _experienceRepository.DeleteAsync(id);
     }
 
     private static ExperienceDto ToDto(Experience experience)

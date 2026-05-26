@@ -8,9 +8,9 @@ public static class ExperienceEndpoints
 {
     public static void Map(WebApplication app)
     {
-        app.MapGet("/experiences", (ExperienceService experienceService) =>
+        app.MapGet("/experiences", async (ExperienceService experienceService) =>
         {
-            var experiences = experienceService.GetExperiences();
+            var experiences = await experienceService.GetExperiencesAsync();
             return Results.Ok(experiences);
         })
         .WithName("GetExperiences")
@@ -18,14 +18,14 @@ public static class ExperienceEndpoints
         .WithDescription("Returns every portfolio experience, including dates, description and technologies used.")
         .Produces<List<ExperienceDto>>(StatusCodes.Status200OK);
 
-        app.MapGet("/experiences/{id:int}", ([FromRoute] int id, ExperienceService experienceService) =>
+        app.MapGet("/experiences/{id:int}", async ([FromRoute] int id, ExperienceService experienceService) =>
         {
             if (id < 1)
             {
                 return Results.BadRequest("Experience id must be greater than zero.");
             }
 
-            var experience = experienceService.GetExperience(id);
+            var experience = await experienceService.GetExperienceAsync(id);
             return experience is null ? Results.NotFound() : Results.Ok(experience);
         })
         .WithName("GetExperienceById")
@@ -35,7 +35,7 @@ public static class ExperienceEndpoints
         .Produces(StatusCodes.Status404NotFound)
         .Produces(StatusCodes.Status400BadRequest);
 
-        app.MapPost("/experiences", (
+        app.MapPost("/experiences", async (
             [FromBody] ExperienceRequestDto experienceRequest,
             ExperienceService experienceService) =>
         {
@@ -64,7 +64,7 @@ public static class ExperienceEndpoints
                 return Results.BadRequest("Add at least one technology.");
             }
 
-            var experience = experienceService.CreateExperience(experienceRequest);
+            var experience = await experienceService.CreateExperienceAsync(experienceRequest);
             return Results.Created($"/experiences/{experience.Id}", experience);
         })
         .WithName("CreateExperience")
@@ -73,7 +73,7 @@ public static class ExperienceEndpoints
         .Produces<ExperienceDto>(StatusCodes.Status201Created)
         .Produces(StatusCodes.Status400BadRequest);
 
-        app.MapPut("/experiences/{id:int}", (
+        app.MapPut("/experiences/{id:int}", async (
             [FromRoute] int id,
             [FromBody] ExperienceRequestDto experienceRequest,
             ExperienceService experienceService) =>
@@ -108,7 +108,7 @@ public static class ExperienceEndpoints
                 return Results.BadRequest("Add at least one technology.");
             }
 
-            var experience = experienceService.UpdateExperience(id, experienceRequest);
+            var experience = await experienceService.UpdateExperienceAsync(id, experienceRequest);
             return experience is null ? Results.NotFound() : Results.Ok(experience);
         })
         .WithName("UpdateExperience")
@@ -118,14 +118,14 @@ public static class ExperienceEndpoints
         .Produces(StatusCodes.Status404NotFound)
         .Produces(StatusCodes.Status400BadRequest);
 
-        app.MapDelete("/experiences/{id:int}", ([FromRoute] int id, ExperienceService experienceService) =>
+        app.MapDelete("/experiences/{id:int}", async ([FromRoute] int id, ExperienceService experienceService) =>
         {
             if (id < 1)
             {
                 return Results.BadRequest("Experience id must be greater than zero.");
             }
 
-            var deleted = experienceService.DeleteExperience(id);
+            var deleted = await experienceService.DeleteExperienceAsync(id);
             return deleted ? Results.NoContent() : Results.NotFound();
         })
         .WithName("DeleteExperience")

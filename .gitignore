@@ -3,6 +3,7 @@ bin/
 obj/
 out/
 artifacts/
+*.db
 
 # Visual Studio
 .vs/

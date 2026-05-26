@@ -13,9 +13,9 @@ public class SkillService
         _skillRepository = skillRepository;
     }
 
-    public List<SkillDto> GetSkills()
+    public async Task<List<SkillDto>> GetSkillsAsync()
     {
-        var skills = _skillRepository.GetAll();
+        var skills = await _skillRepository.GetAllAsync();
         var skillDtos = new List<SkillDto>();
 
         foreach (var skill in skills)
@@ -26,31 +26,31 @@ public class SkillService
         return skillDtos;
     }
 
-    public SkillDto? GetSkill(int id)
+    public async Task<SkillDto?> GetSkillAsync(int id)
     {
-        var skill = _skillRepository.GetById(id);
+        var skill = await _skillRepository.GetByIdAsync(id);
         return skill is null ? null : ToDto(skill);
     }
 
-    public SkillDto CreateSkill(SkillRequestDto skillRequest)
+    public async Task<SkillDto> CreateSkillAsync(SkillRequestDto skillRequest)
     {
         var skill = ToModel(skillRequest);
-        var createdSkill = _skillRepository.Add(skill);
+        var createdSkill = await _skillRepository.AddAsync(skill);
 
         return ToDto(createdSkill);
     }
 
-    public SkillDto? UpdateSkill(int id, SkillRequestDto skillRequest)
+    public async Task<SkillDto?> UpdateSkillAsync(int id, SkillRequestDto skillRequest)
     {
         var skill = ToModel(skillRequest);
-        var updatedSkill = _skillRepository.Update(id, skill);
+        var updatedSkill = await _skillRepository.UpdateAsync(id, skill);
 
         return updatedSkill is null ? null : ToDto(updatedSkill);
     }
 
-    public bool DeleteSkill(int id)
+    public async Task<bool> DeleteSkillAsync(int id)
     {
-        return _skillRepository.Delete(id);
+        return await _skillRepository.DeleteAsync(id);
     }
 
     private static SkillDto ToDto(Skill skill)

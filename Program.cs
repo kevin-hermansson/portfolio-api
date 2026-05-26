@@ -1,12 +1,19 @@
+using Microsoft.EntityFrameworkCore;
 using Portfolio.Api.Endpoints;
 using Portfolio.Api.Core.Services;
+using Portfolio.Api.Data;
 using Portfolio.Api.Data.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddSingleton<ProjectRepository>();
-builder.Services.AddSingleton<SkillRepository>();
-builder.Services.AddSingleton<ExperienceRepository>();
+var connectionString = builder.Configuration.GetConnectionString("PortfolioDatabase")
+    ?? "Data Source=portfolio.db";
+
+builder.Services.AddDbContext<PortfolioDbContext>(options =>
+    options.UseSqlite(connectionString));
+builder.Services.AddScoped<ProjectRepository>();
+builder.Services.AddScoped<SkillRepository>();
+builder.Services.AddScoped<ExperienceRepository>();
 builder.Services.AddScoped<ProjectService>();
 builder.Services.AddScoped<SkillService>();
 builder.Services.AddScoped<ExperienceService>();
