@@ -23,10 +23,11 @@ builder.Services.AddSwaggerGen(options =>
 
 var app = builder.Build();
 
-
-
-app.UseSwagger();
-app.UseSwaggerUI();
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 
 app.MapGet("/", () => Results.Redirect("/swagger"))
