@@ -29,7 +29,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.MapGet("/", () => Results.Redirect("/projects"))
+app.MapGet("/", () => Results.Redirect("/swagger"));
     .ExcludeFromDescription();
 ProjectEndpoints.Map(app);
 SkillEndpoints.Map(app);
