@@ -5,7 +5,11 @@ using Portfolio.Api.Data.Repositories;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddSingleton<ProjectRepository>();
+builder.Services.AddSingleton<SkillRepository>();
+builder.Services.AddSingleton<ExperienceRepository>();
 builder.Services.AddScoped<ProjectService>();
+builder.Services.AddScoped<SkillService>();
+builder.Services.AddScoped<ExperienceService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
@@ -28,5 +32,7 @@ if (app.Environment.IsDevelopment())
 app.MapGet("/", () => Results.Redirect("/projects"))
     .ExcludeFromDescription();
 ProjectEndpoints.Map(app);
+SkillEndpoints.Map(app);
+ExperienceEndpoints.Map(app);
 
 app.Run();
