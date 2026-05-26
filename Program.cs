@@ -14,7 +14,7 @@ builder.Services.AddSwaggerGen(options =>
         Title = "CV Portfolio API",
         Version = "v1",
         Description = "API endpoints for portfolio project data."
-    }); //typo
+    }); 
 });
 
 var app = builder.Build();
