@@ -32,6 +32,27 @@ public class ProjectService
         return project is null ? null : ToDto(project);
     }
 
+    public async Task<ProjectDto> CreateProjectAsync(ProjectRequestDto projectRequest)
+    {
+        var project = ToModel(projectRequest);
+        var createdProject = await _projectRepository.AddAsync(project);
+
+        return ToDto(createdProject);
+    }
+
+    public async Task<ProjectDto?> UpdateProjectAsync(int id, ProjectRequestDto projectRequest)
+    {
+        var project = ToModel(projectRequest);
+        var updatedProject = await _projectRepository.UpdateAsync(id, project);
+
+        return updatedProject is null ? null : ToDto(updatedProject);
+    }
+
+    public async Task<bool> DeleteProjectAsync(int id)
+    {
+        return await _projectRepository.DeleteAsync(id);
+    }
+
     private static ProjectDto ToDto(Project project)
     {
         return new ProjectDto
@@ -41,6 +62,17 @@ public class ProjectService
             Description = project.Description,
             RepositoryUrl = project.RepositoryUrl,
             Technologies = project.Technologies
+        };
+    }
+
+    private static Project ToModel(ProjectRequestDto projectRequest)
+    {
+        return new Project
+        {
+            Title = projectRequest.Title,
+            Description = projectRequest.Description,
+            RepositoryUrl = projectRequest.RepositoryUrl,
+            Technologies = projectRequest.Technologies
         };
     }
 }
