@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Portfolio.Api.Data;
 using Portfolio.Api.Data.Models;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Portfolio.Api.Data.Repositories;
 
