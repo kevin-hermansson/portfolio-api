@@ -31,6 +31,11 @@ public static class RequestValidator
         return null;
     }
 
+    public static string? ValidateProfile(ProfileRequestDto? request)
+    {
+        return ValidateRequest(request);
+    }
+
     public static string? ValidatePositiveId(int id, string resourceName)
     {
         return id < 1 ? $"{resourceName} id must be greater than zero." : null;

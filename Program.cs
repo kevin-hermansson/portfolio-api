@@ -3,6 +3,8 @@ using Portfolio.Api.Endpoints;
 using Portfolio.Api.Core.Services;
 using Portfolio.Api.Data;
 using Portfolio.Api.Data.Repositories;
+using Portfolio.Api.Data.Seed;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,9 +16,11 @@ builder.Services.AddDbContext<PortfolioDbContext>(options =>
 builder.Services.AddScoped<ProjectRepository>();
 builder.Services.AddScoped<SkillRepository>();
 builder.Services.AddScoped<ExperienceRepository>();
+builder.Services.AddScoped<ProfileRepository>();
 builder.Services.AddScoped<ProjectService>();
 builder.Services.AddScoped<SkillService>();
 builder.Services.AddScoped<ExperienceService>();
+builder.Services.AddScoped<ProfileService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
@@ -24,7 +28,7 @@ builder.Services.AddSwaggerGen(options =>
     {
         Title = "CV Portfolio API",
         Version = "v1",
-        Description = "API endpoints for portfolio project data."
+        Description = "API endpoints for portfolio data."
     }); 
 });
 
@@ -42,5 +46,13 @@ app.MapGet("/", () => Results.Redirect("/swagger"))
 ProjectEndpoints.Map(app);
 SkillEndpoints.Map(app);
 ExperienceEndpoints.Map(app);
+ProfileEndpoints.Map(app);
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<PortfolioDbContext>();
+    await dbContext.Database.MigrateAsync();
+    await PortfolioDbSeeder.SeedAsync(dbContext);
+}
 
 app.Run();

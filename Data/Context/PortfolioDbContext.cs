@@ -15,4 +15,6 @@ public class PortfolioDbContext : DbContext
     public DbSet<Skill> Skills => Set<Skill>();
 
     public DbSet<Experience> Experiences => Set<Experience>();
+
+    public DbSet<Profile> Profiles => Set<Profile>();
 }
