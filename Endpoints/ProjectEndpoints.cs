@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Portfolio.Api.Core.DTOs;
 using Portfolio.Api.Core.Services;
+using Portfolio.Api.Core.Validation;
 
 namespace Portfolio.Api.Endpoints;
 
@@ -20,9 +21,10 @@ public static class ProjectEndpoints
 
         app.MapGet("/projects/{id:int}", async ([FromRoute] int id, ProjectService projectService) =>
         {
-            if (id < 1)
+            var validationError = RequestValidator.ValidatePositiveId(id, "Project");
+            if (validationError is not null)
             {
-                return Results.BadRequest("Project id must be greater than zero.");
+                return Results.BadRequest(validationError);
             }
 
             var project = await projectService.GetProjectAsync(id);
@@ -39,24 +41,10 @@ public static class ProjectEndpoints
             [FromBody] ProjectRequestDto projectRequest,
             ProjectService projectService) =>
         {
-            if (string.IsNullOrWhiteSpace(projectRequest.Title) || projectRequest.Title.Length < 2 || projectRequest.Title.Length > 100)
+            var validationError = RequestValidator.ValidateProject(projectRequest);
+            if (validationError is not null)
             {
-                return Results.BadRequest("Title must be between 2 and 100 characters.");
-            }
-
-            if (string.IsNullOrWhiteSpace(projectRequest.Description) || projectRequest.Description.Length < 10 || projectRequest.Description.Length > 500)
-            {
-                return Results.BadRequest("Description must be between 10 and 500 characters.");
-            }
-
-            if (string.IsNullOrWhiteSpace(projectRequest.RepositoryUrl))
-            {
-                return Results.BadRequest("Repository URL is required.");
-            }
-
-            if (projectRequest.Technologies is null || projectRequest.Technologies.Count == 0)
-            {
-                return Results.BadRequest("Add at least one technology.");
+                return Results.BadRequest(validationError);
             }
 
             var project = await projectService.CreateProjectAsync(projectRequest);
@@ -73,29 +61,16 @@ public static class ProjectEndpoints
             [FromBody] ProjectRequestDto projectRequest,
             ProjectService projectService) =>
         {
-            if (id < 1)
+            var idValidationError = RequestValidator.ValidatePositiveId(id, "Project");
+            if (idValidationError is not null)
             {
-                return Results.BadRequest("Project id must be greater than zero.");
+                return Results.BadRequest(idValidationError);
             }
 
-            if (string.IsNullOrWhiteSpace(projectRequest.Title) || projectRequest.Title.Length < 2 || projectRequest.Title.Length > 100)
+            var validationError = RequestValidator.ValidateProject(projectRequest);
+            if (validationError is not null)
             {
-                return Results.BadRequest("Title must be between 2 and 100 characters.");
-            }
-
-            if (string.IsNullOrWhiteSpace(projectRequest.Description) || projectRequest.Description.Length < 10 || projectRequest.Description.Length > 500)
-            {
-                return Results.BadRequest("Description must be between 10 and 500 characters.");
-            }
-
-            if (string.IsNullOrWhiteSpace(projectRequest.RepositoryUrl))
-            {
-                return Results.BadRequest("Repository URL is required.");
-            }
-
-            if (projectRequest.Technologies is null || projectRequest.Technologies.Count == 0)
-            {
-                return Results.BadRequest("Add at least one technology.");
+                return Results.BadRequest(validationError);
             }
 
             var project = await projectService.UpdateProjectAsync(id, projectRequest);
@@ -110,9 +85,10 @@ public static class ProjectEndpoints
 
         app.MapDelete("/projects/{id:int}", async ([FromRoute] int id, ProjectService projectService) =>
         {
-            if (id < 1)
+            var validationError = RequestValidator.ValidatePositiveId(id, "Project");
+            if (validationError is not null)
             {
-                return Results.BadRequest("Project id must be greater than zero.");
+                return Results.BadRequest(validationError);
             }
 
             var deleted = await projectService.DeleteProjectAsync(id);

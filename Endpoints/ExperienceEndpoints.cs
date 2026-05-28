@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Portfolio.Api.Core.DTOs;
 using Portfolio.Api.Core.Services;
+using Portfolio.Api.Core.Validation;
 
 namespace Portfolio.Api.Endpoints;
 
@@ -20,9 +21,10 @@ public static class ExperienceEndpoints
 
         app.MapGet("/experiences/{id:int}", async ([FromRoute] int id, ExperienceService experienceService) =>
         {
-            if (id < 1)
+            var validationError = RequestValidator.ValidatePositiveId(id, "Experience");
+            if (validationError is not null)
             {
-                return Results.BadRequest("Experience id must be greater than zero.");
+                return Results.BadRequest(validationError);
             }
 
             var experience = await experienceService.GetExperienceAsync(id);
@@ -39,29 +41,10 @@ public static class ExperienceEndpoints
             [FromBody] ExperienceRequestDto experienceRequest,
             ExperienceService experienceService) =>
         {
-            if (string.IsNullOrWhiteSpace(experienceRequest.Company) || experienceRequest.Company.Length < 2 || experienceRequest.Company.Length > 100)
+            var validationError = RequestValidator.ValidateExperience(experienceRequest);
+            if (validationError is not null)
             {
-                return Results.BadRequest("Company must be between 2 and 100 characters.");
-            }
-
-            if (string.IsNullOrWhiteSpace(experienceRequest.Role) || experienceRequest.Role.Length < 2 || experienceRequest.Role.Length > 100)
-            {
-                return Results.BadRequest("Role must be between 2 and 100 characters.");
-            }
-
-            if (experienceRequest.EndDate is not null && experienceRequest.EndDate < experienceRequest.StartDate)
-            {
-                return Results.BadRequest("End date must be after start date.");
-            }
-
-            if (string.IsNullOrWhiteSpace(experienceRequest.Description) || experienceRequest.Description.Length < 10 || experienceRequest.Description.Length > 700)
-            {
-                return Results.BadRequest("Description must be between 10 and 700 characters.");
-            }
-
-            if (experienceRequest.Technologies is null || experienceRequest.Technologies.Count == 0)
-            {
-                return Results.BadRequest("Add at least one technology.");
+                return Results.BadRequest(validationError);
             }
 
             var experience = await experienceService.CreateExperienceAsync(experienceRequest);
@@ -78,34 +61,16 @@ public static class ExperienceEndpoints
             [FromBody] ExperienceRequestDto experienceRequest,
             ExperienceService experienceService) =>
         {
-            if (id < 1)
+            var idValidationError = RequestValidator.ValidatePositiveId(id, "Experience");
+            if (idValidationError is not null)
             {
-                return Results.BadRequest("Experience id must be greater than zero.");
+                return Results.BadRequest(idValidationError);
             }
 
-            if (string.IsNullOrWhiteSpace(experienceRequest.Company) || experienceRequest.Company.Length < 2 || experienceRequest.Company.Length > 100)
+            var validationError = RequestValidator.ValidateExperience(experienceRequest);
+            if (validationError is not null)
             {
-                return Results.BadRequest("Company must be between 2 and 100 characters.");
-            }
-
-            if (string.IsNullOrWhiteSpace(experienceRequest.Role) || experienceRequest.Role.Length < 2 || experienceRequest.Role.Length > 100)
-            {
-                return Results.BadRequest("Role must be between 2 and 100 characters.");
-            }
-
-            if (experienceRequest.EndDate is not null && experienceRequest.EndDate < experienceRequest.StartDate)
-            {
-                return Results.BadRequest("End date must be after start date.");
-            }
-
-            if (string.IsNullOrWhiteSpace(experienceRequest.Description) || experienceRequest.Description.Length < 10 || experienceRequest.Description.Length > 700)
-            {
-                return Results.BadRequest("Description must be between 10 and 700 characters.");
-            }
-
-            if (experienceRequest.Technologies is null || experienceRequest.Technologies.Count == 0)
-            {
-                return Results.BadRequest("Add at least one technology.");
+                return Results.BadRequest(validationError);
             }
 
             var experience = await experienceService.UpdateExperienceAsync(id, experienceRequest);
@@ -120,9 +85,10 @@ public static class ExperienceEndpoints
 
         app.MapDelete("/experiences/{id:int}", async ([FromRoute] int id, ExperienceService experienceService) =>
         {
-            if (id < 1)
+            var validationError = RequestValidator.ValidatePositiveId(id, "Experience");
+            if (validationError is not null)
             {
-                return Results.BadRequest("Experience id must be greater than zero.");
+                return Results.BadRequest(validationError);
             }
 
             var deleted = await experienceService.DeleteExperienceAsync(id);

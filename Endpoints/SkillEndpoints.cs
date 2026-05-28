@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Portfolio.Api.Core.DTOs;
 using Portfolio.Api.Core.Services;
+using Portfolio.Api.Core.Validation;
 
 namespace Portfolio.Api.Endpoints;
 
@@ -20,9 +21,10 @@ public static class SkillEndpoints
 
         app.MapGet("/skills/{id:int}", async ([FromRoute] int id, SkillService skillService) =>
         {
-            if (id < 1)
+            var validationError = RequestValidator.ValidatePositiveId(id, "Skill");
+            if (validationError is not null)
             {
-                return Results.BadRequest("Skill id must be greater than zero.");
+                return Results.BadRequest(validationError);
             }
 
             var skill = await skillService.GetSkillAsync(id);
@@ -39,19 +41,10 @@ public static class SkillEndpoints
             [FromBody] SkillRequestDto skillRequest,
             SkillService skillService) =>
         {
-            if (string.IsNullOrWhiteSpace(skillRequest.Name) || skillRequest.Name.Length < 2 || skillRequest.Name.Length > 80)
+            var validationError = RequestValidator.ValidateSkill(skillRequest);
+            if (validationError is not null)
             {
-                return Results.BadRequest("Name must be between 2 and 80 characters.");
-            }
-
-            if (string.IsNullOrWhiteSpace(skillRequest.Category) || skillRequest.Category.Length < 2 || skillRequest.Category.Length > 50)
-            {
-                return Results.BadRequest("Category must be between 2 and 50 characters.");
-            }
-
-            if (skillRequest.Level < 1 || skillRequest.Level > 5)
-            {
-                return Results.BadRequest("Level must be between 1 and 5.");
+                return Results.BadRequest(validationError);
             }
 
             var skill = await skillService.CreateSkillAsync(skillRequest);
@@ -68,24 +61,16 @@ public static class SkillEndpoints
             [FromBody] SkillRequestDto skillRequest,
             SkillService skillService) =>
         {
-            if (id < 1)
+            var idValidationError = RequestValidator.ValidatePositiveId(id, "Skill");
+            if (idValidationError is not null)
             {
-                return Results.BadRequest("Skill id must be greater than zero.");
+                return Results.BadRequest(idValidationError);
             }
 
-            if (string.IsNullOrWhiteSpace(skillRequest.Name) || skillRequest.Name.Length < 2 || skillRequest.Name.Length > 80)
+            var validationError = RequestValidator.ValidateSkill(skillRequest);
+            if (validationError is not null)
             {
-                return Results.BadRequest("Name must be between 2 and 80 characters.");
-            }
-
-            if (string.IsNullOrWhiteSpace(skillRequest.Category) || skillRequest.Category.Length < 2 || skillRequest.Category.Length > 50)
-            {
-                return Results.BadRequest("Category must be between 2 and 50 characters.");
-            }
-
-            if (skillRequest.Level < 1 || skillRequest.Level > 5)
-            {
-                return Results.BadRequest("Level must be between 1 and 5.");
+                return Results.BadRequest(validationError);
             }
 
             var skill = await skillService.UpdateSkillAsync(id, skillRequest);
@@ -100,9 +85,10 @@ public static class SkillEndpoints
 
         app.MapDelete("/skills/{id:int}", async ([FromRoute] int id, SkillService skillService) =>
         {
-            if (id < 1)
+            var validationError = RequestValidator.ValidatePositiveId(id, "Skill");
+            if (validationError is not null)
             {
-                return Results.BadRequest("Skill id must be greater than zero.");
+                return Results.BadRequest(validationError);
             }
 
             var deleted = await skillService.DeleteSkillAsync(id);
