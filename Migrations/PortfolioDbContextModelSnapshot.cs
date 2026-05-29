@@ -15,7 +15,7 @@ namespace Portfolio.Api.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "10.0.8");
+            modelBuilder.HasAnnotation("ProductVersion", "8.0.8");
 
             modelBuilder.Entity("Portfolio.Api.Data.Models.Experience", b =>
                 {
@@ -41,7 +41,7 @@ namespace Portfolio.Api.Migrations
                     b.Property<DateOnly>("StartDate")
                         .HasColumnType("TEXT");
 
-                    b.PrimitiveCollection<string>("Technologies")
+                    b.Property<string>("Technologies")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -111,7 +111,7 @@ namespace Portfolio.Api.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.PrimitiveCollection<string>("Technologies")
+                    b.Property<string>("Technologies")
                         .IsRequired()
                         .HasColumnType("TEXT");
 

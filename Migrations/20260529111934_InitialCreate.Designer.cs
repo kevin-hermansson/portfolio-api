@@ -11,14 +11,14 @@ using Portfolio.Api.Data;
 namespace Portfolio.Api.Migrations
 {
     [DbContext(typeof(PortfolioDbContext))]
-    [Migration("20260526191641_InitialCreate")]
+    [Migration("20260529111934_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "10.0.8");
+            modelBuilder.HasAnnotation("ProductVersion", "8.0.8");
 
             modelBuilder.Entity("Portfolio.Api.Data.Models.Experience", b =>
                 {
@@ -44,13 +44,60 @@ namespace Portfolio.Api.Migrations
                     b.Property<DateOnly>("StartDate")
                         .HasColumnType("TEXT");
 
-                    b.PrimitiveCollection<string>("Technologies")
+                    b.Property<string>("Technologies")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
                     b.ToTable("Experiences");
+                });
+
+            modelBuilder.Entity("Portfolio.Api.Data.Models.Profile", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Bio")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("GitHubUrl")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Headline")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("LinkedInUrl")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Location")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ResumeUrl")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("WebsiteUrl")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Profiles");
                 });
 
             modelBuilder.Entity("Portfolio.Api.Data.Models.Project", b =>
@@ -67,7 +114,7 @@ namespace Portfolio.Api.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.PrimitiveCollection<string>("Technologies")
+                    b.Property<string>("Technologies")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
